@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <link rel="stylesheet" href="/css/profile.css" />
+  </head>
+  <body>
+    <div class="profile-container">
+      <h1>User Profile</h1>
+      <div class="user-details" id="user-details">
+        <!-- User details will be dynamically injected here -->
+      </div>
+      <button class="update-button" onclick="toggleEditForm()">
+       Home
+      </button>
+
+      <div class="stats">
+        <h3>Booked Events</h3>
+        <p id="booked-events-count">Loading...</p>
+        <div id="booked-events-list"></div>
+      </div>
+
+      <div id="edit-form-modal" class="modal">
+        <div class="modal-content">
+          <span class="close-button" onclick="toggleEditForm()">&times;</span>
+          <h2>Edit Profile</h2>
+          <form onsubmit="updateProfile(event)">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" name="fullName" required />
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required />
+
+            <button type="submit">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      async function fetchUserDetails() {
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/user/getdetails"
+          );
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const user = await response.json();
+          displayUserDetails(user);
+          fetchBookedEvents(user.id);
+        } catch (error) {
+            alert(error.message);
+          console.error("Error fetching user details:", error);
+        }
+      }
+
+      function displayUserDetails(user) {
+        const userDetails = document.getElementById("user-details");
+        userDetails.innerHTML = `
+                <img src="${
+                  user.profilePhoto
+                }" alt="Profile Picture" class="profile-image">
+                <h2>${user.fullName}</h2>
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p><strong>Joined:</strong> ${new Date(
+                  user.createdAt
+                ).toLocaleDateString()}</p>
+            `;
+      }
+
+      async function fetchBookedEvents(userId) {
+        try {
+          const response = await fetch(
+            `http://localhost:3000/api/user/booked-events`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch booked events count");
+          }
+          const { BookedTicket } = await response.json();
+          document.getElementById("booked-events-count").innerText =
+            BookedTicket.length;
+
+          const bookedEventsList =
+            document.getElementById("booked-events-list");
+          bookedEventsList.innerHTML = ""; // Clear any previous events
+
+          BookedTicket.forEach((event) => {
+            const eventElement = document.createElement("div");
+            eventElement.className = "event-item";
+            eventElement.innerHTML = `
+                        <p><strong>Event Name:</strong> ${event.name}</p>
+                        <p><strong>Date:</strong> ${new Date(
+                          event.date
+                        ).toLocaleDateString()}</p>
+                    `;
+            bookedEventsList.appendChild(eventElement);
+          });
+        } catch (error) {
+            alert(error.message);
+          console.error("Error fetching booked events count:", error);
+        }
+      }
+
+      function toggleEditForm() {
+        // const modal = document.getElementById("edit-form-modal");
+        // if (modal) {
+        //   modal.classList.toggle("show-modal");
+        //   console.log("Modal toggled:", modal.classList.contains("show-modal"));
+        // } else {
+        //   console.error("Modal element not found");
+        // }
+        window.location.href = '/events';
+      }
+
+      async function updateProfile(event) {
+        event.preventDefault();
+        const fullName = document.getElementById("fullName").value;
+        const email = document.getElementById("email").value;
+        const username = document.getElementById("username").value;
+
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/user/update",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ fullName, email }),
+            }
+          );
+          if (!response.ok) {
+            throw new Error("Failed to update profile");
+          }
+          alert("Profile updated successfully!");
+          fetchUserDetails();
+          toggleEditForm();
+        } catch (error) {
+          console.error("Error updating profile:", error);
+          alert(error.message);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", fetchUserDetails);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+/* Reset some default browser styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif; /* Use a clean font */
+    background-color: #f4f4f4; /* Light gray background */
+    color: #333; /* Dark gray text */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+}
+
+.form-container {
+    background-color: white; /* White background for the form */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px; /* Padding around the content */
+    width: 300px; /* Set a fixed width for the form */
+}
+
+h2 {
+    margin-bottom: 20px; /* Space below the heading */
+    text-align: center; /* Center the heading */
+    color: #4CAF50; /* Green color for the heading */
+}
+
+.form-group {
+    margin-bottom: 15px; /* Space between form groups */
+}
+
+label {
+    display: block; /* Labels are block elements */
+    margin-bottom: 5px; /* Space below labels */
+    font-weight: bold; /* Bold text for labels */
+}
+
+input[type="email"],
+input[type="password"] {
+    width: 100%; /* Full width inputs */
+    padding: 10px; /* Padding inside inputs */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Slightly rounded corners */
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #4CAF50; /* Green border on focus */
+    outline: none; /* Remove default outline */
+}
+
+button {
+    width: 100%; /* Full width button */
+    padding: 10px; /* Padding inside the button */
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Slightly rounded corners */
+    font-size: 16px; /* Larger font size */
+    cursor: pointer; /* Change cursor to pointer */
+}
+
+button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+p {
+    text-align: center; /* Centered text */
+    margin-top: 10px; /* Space above paragraph */
+}
+
+.alert {
+    background-color: #f44336; /* Red background for alerts */
+    color: white; /* White text for alerts */
+    padding: 10px; /* Padding inside alerts */
+    margin-top: 15px; /* Space above alert */
+    border-radius: 4px; /* Slightly rounded corners */
+    text-align: center; /* Centered text in alert */
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Management - Home</title>
+  <link rel="stylesheet" href="/styles.css"> <!-- Link to a CSS file if you have one in the public folder -->
+  <style>
+    /* Inline styling for demo purposes */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f3f4f6;
+    }
+    .container {
+      width: 80%;
+      max-width: 900px;
+      margin: 50px auto;
+      text-align: center;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #2c3e50;
+      font-size: 36px;
+    }
+    p {
+      color: #34495e;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    .buttons {
+      margin-top: 30px;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #3498db;
+      border: none;
+      border-radius: 4px;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    .btn:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to Event Management</h1>
+    <p>Discover exciting events, book your seats, and manage your reservations, all in one place.</p>
+    <div class="buttons">
+      <button onclick="checkLogin()" class="btn">View Events</button>
+      <a href="/user/login" class="btn">Login</a>
+      <a href="/user/register" class="btn">Register</a>
+    </div>
+  </div>
+  <script>
+    function checkLogin() {
+      // Check for a token in cookies
+      const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+      
+      if (token) {
+        // Redirect to events page if token is present
+        window.location.href = '/events';
+      } else {
+        // Redirect to login page if token is not found
+        alert("Please log in to view events.");
+        window.location.href = '/user/login';
+      }
+    }
+  </script>
+</body>
+</body>
+</html>

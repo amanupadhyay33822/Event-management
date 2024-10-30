@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Events</title>
+    <link rel="stylesheet" href="/css/events.css"> <!-- Link to your stylesheet -->
+</head>
+<body>
+    <div class="container">
+        <h1>Available Events</h1>
+
+        <!-- Profile Icon Section -->
+        <div class="profile-container">
+            <div class="profile-icon" onclick="toggleDropdown()">
+                <span>👤</span>
+            </div>
+            <div class="dropdown" id="dropdown-menu">
+                <a href="#" onclick="showProfile(event)">Show Profile</a>
+                <a  onclick="logout()">Logout</a>
+            </div>
+        </div>
+
+        <div class="event-list" id="event-list">
+            <!-- Events will be dynamically injected here -->
+        </div>
+    </div>
+
+    <script>
+        async function showProfile(event) {
+            event.preventDefault();
+            try {
+                window.location.href = '/profile';
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                alert(error.message);
+            }
+        }
+
+        async function fetchEvents() {
+            try {
+                const response = await fetch('http://localhost:3000/api/event/get');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const events = await response.json();
+                displayEvents(events);
+            } catch (error) {
+                console.error('Error fetching events:', error);
+                alert(error.message);
+            }
+        }
+
+        function displayEvents(events) {
+            const eventList = document.getElementById('event-list');
+            eventList.innerHTML = ''; 
+            events.forEach(event => {
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-card';
+                eventCard.innerHTML = `
+                    <h2>${event.name}</h2>
+                    <p><strong>Description:</strong> ${event.description}</p>
+                    <p><strong>Location:</strong> ${event.location}</p>
+                    <p><strong>Price:</strong> $${event.price.toFixed(2)}</p>
+                    <form onsubmit="handleBooking(event, '${event._id}')">
+                        <label for="seats">Seats to book:</label>
+                        <input type="number" id="seats" name="seats" min="1" max="${event.availableSeats}" required>
+                        <button type="submit">Book Now</button>
+                    </form>
+                `;
+                eventList.appendChild(eventCard);
+            });
+        }
+
+        async function handleBooking(event, eventId) {
+            event.preventDefault();
+            const form = event.target;
+            const seats = form.seats.value;
+
+            try {
+                const response = await fetch(`/api/event/book/${eventId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ seats })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Booking failed.');
+                }
+                alert('Booking successful!');
+                fetchEvents(); // Refresh events to update availability
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+                console.error('Booking error:', error);
+            }
+        }
+
+        // Fetch events when the page loads
+        document.addEventListener('DOMContentLoaded', fetchEvents);
+
+        // Toggle dropdown menu visibility
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-menu');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        async function logout() {
+    try {
+        const response = await fetch('http://localhost:3000/api/user/logout', {
+            method: 'POST',
+            credentials: 'include', // Include cookies for session management, if needed
+        });
+
+        if (!response.ok) {
+            throw new Error('Logout failed');
+        }
+
+        alert("Successfully logged out!");
+        window.location.href = '/'; // Redirect to homepage after logout
+    } catch (error) {
+        console.error('Error during logout:', error);
+        alert('Failed to log out. Please try again.');
+    }
+}
+
+    </script>
+</body>
+</html>
