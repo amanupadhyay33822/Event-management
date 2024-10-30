@@ -43,7 +43,7 @@
       async function fetchUserDetails() {
         try {
           const response = await fetch(
-            "http://localhost:3000/api/user/getdetails"
+            "https://event-management-production-32f9.up.railway.app/api/user/getdetails"
           );
           if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -74,7 +74,7 @@
       async function fetchBookedEvents(userId) {
         try {
           const response = await fetch(
-            `http://localhost:3000/api/user/booked-events`
+            `https://event-management-production-32f9.up.railway.app/api/user/booked-events`
           );
           if (!response.ok) {
             throw new Error("Failed to fetch booked events count");
